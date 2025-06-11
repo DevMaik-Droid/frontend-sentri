@@ -1,14 +1,10 @@
+import { RouterProvider } from './router-provider';
+import './styles/globals.css'
 
-import './App.css'
-import Inicio from './pages/Inicio'
-
-function App() {
-
+// App.tsx
+export default function App() {
   return (
-    <>
-      <Inicio/>
-    </>
-  )
+    <RouterProvider/>
+  );
 }
 
-export default App
