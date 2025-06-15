@@ -1,19 +1,12 @@
-import { SidebarInset, SidebarProvider } from "../ui/sidebar"
-import { StudentSidebar } from "../organismos/student/student-sidebar"
-import { StudentHeader } from "../organismos/student/student-header"
 import { StudentMetricsGrid } from "../organismos/student/student-metrics-grid"
 import { StudentSubjectsTable } from "../organismos/student/student-subjects-table"
 import { StudentAssignmentsTable } from "../organismos/student/student-assignments-table"
 import { StudentGradesOverview } from "../organismos/student/student-grades-overview"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
-export function StudentDashboardLayout() {
+export  function MainEstudiante() {
   return (
-    <SidebarProvider>
-      <StudentSidebar />
-      <SidebarInset>
-        <StudentHeader />
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold tracking-tight">Mi Dashboard</h2>
@@ -39,8 +32,6 @@ export function StudentDashboardLayout() {
               </TabsContent>
             </Tabs>
           </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    </div>
   )
 }

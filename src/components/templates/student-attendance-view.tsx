@@ -1,6 +1,6 @@
 import { SidebarInset, SidebarProvider } from "../ui/sidebar"
-import { AppSidebar } from "../organismos/app-sidebar"
-import { DashboardHeader } from "../organismos/dashboard-header"
+import { AppSidebar } from "../organismos/AppSidebar"
+import { DashboardHeader } from "../organismos/AppNavbar"
 import { StudentAttendanceContent } from "../organismos/student/student-attendance-content"
 
 export function StudentAttendanceView() {

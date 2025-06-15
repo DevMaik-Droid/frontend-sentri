@@ -3,29 +3,40 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 
 import { TeacherDashboardLayout } from "./components/templates/teacher-dashboard"
-import { StudentDashboardLayout } from "./components/templates/student-dashboard"
-import { StudentListView } from "./components/templates/student-list-view"
+import { EstudianteDashboard } from "./pages/EstudianteDashboard"
 import { StudentAttendanceView } from "./components/templates/student-attendance-view"
 import { StudentGradesView } from "./components/templates/student-grades-view"
 import { StudentRecordsView } from "./components/templates/student-records-view"
-import { DashboardLayout } from "./components/templates/dashboard-layout"
+import { Home } from "./pages/Home"
+import AdminDashboard from "./pages/AdminDashboard"
+import { MainAdmin } from "./components/organismos/MainAdmin"
+import ListaEstudiantes from "./pages/estudiante/ListaEstudiantes"
+import { MainEstudiante } from "./components/organismos/MainEstudiante"
 
 export function RouterProvider() {
   return (
     <Router>
       <Routes>
         {/* Ruta principal - Dashboard Administrador */}
-        <Route path="/" element={<DashboardLayout />} />
+        <Route path="/" element={<Home />} />
 
         {/* Dashboard por roles */}
-        <Route path="/admin" element={<DashboardLayout />} />
-        <Route path="/teacher" element={<TeacherDashboardLayout />} />
-        <Route path="/student" element={<StudentDashboardLayout />} />
+        <Route path="/dashboard" element={<AdminDashboard/>}>
+          <Route index element={<MainAdmin/>} />
+          <Route path="estudiantes/lista" element={<ListaEstudiantes />} />
+          <Route path="estudiantes/asistencia" element={<StudentAttendanceView />} />
+          <Route path="estudiantes/calificaciones" element={<StudentGradesView />} />
+          <Route path="estudiantes/expedientes" element={<StudentRecordsView />} />
+
+        </Route>
+
+        <Route path="/docente" element={<TeacherDashboardLayout />} />
+        <Route path="/estudiante" element={<EstudianteDashboard />} />
 
         {/* Rutas de Estudiantes - Administrador */}
-        <Route path="/estudiantes">
-          <Route index element={<Navigate to="/estudiantes/lista" replace />} />
-          <Route path="lista" element={<StudentListView />} />
+        {/* Layout del estudiante con sus páginas internas */}
+        <Route path="/estudiante" element={<EstudianteDashboard />}>
+          <Route index element={<MainEstudiante/>} />
           <Route path="asistencia" element={<StudentAttendanceView />} />
           <Route path="calificaciones" element={<StudentGradesView />} />
           <Route path="expedientes" element={<StudentRecordsView />} />

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { AttendanceDonutChart } from "../../moleculas/attendance-donut-chart"
 import { AttendanceChart } from "../../moleculas/attendance-chart"
-import { DatePicker } from "../../moleculas/date-picker"
+import { DatePicker } from "../../moleculas/DatePicker"
 
 // Datos de ejemplo para asistencia
 const attendanceData = [

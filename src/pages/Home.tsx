@@ -1,8 +1,10 @@
 
-import { DashboardLayout } from "../components/templates/dashboard-layout"
+import { EstudianteDashboard } from "./EstudianteDashboard"
 export function Home() {
   return (
-    <DashboardLayout/>
+    <EstudianteDashboard>
+
+    </EstudianteDashboard>
       
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus, Download, Upload, Search, Filter, MoreHorizontal, Edit, Trash, Eye } from "lucide-react"
 import { Button } from "../../ui/button"
 import { Card, CardContent } from "../../ui/card"
@@ -27,6 +27,8 @@ import {
 import { Label } from "../../ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs"
+import { GeneralService } from "../../../services/general.service"
+import { DatePicker } from "../../moleculas/DatePicker"
 
 // Datos de ejemplo para estudiantes
 const studentsData = [
@@ -112,7 +114,13 @@ const studentsData = [
   },
 ]
 
-export function StudentListContent() {
+interface Niveles {
+  id: number;
+  nombre: string;
+  description: string;
+}
+
+export function ListaContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("all")
   const [selectedCourse, setSelectedCourse] = useState("all")
@@ -133,6 +141,25 @@ export function StudentListContent() {
 
   // Obtener cursos únicos para el filtro
   const uniqueCourses = Array.from(new Set(studentsData.map((student) => student.course)))
+
+  const [niveles, setNiveles] = useState<Niveles[]>([]);
+
+
+
+  useEffect(() => {
+    const obtener_niveles = async () => {
+      try{
+        const res = await GeneralService.getNiveles();
+        setNiveles(res.data);
+      }catch(error){
+        console.log(error);
+      }
+    }
+    obtener_niveles();
+  }, []);
+
+
+
 
   return (
     <div className="space-y-4">
@@ -185,6 +212,7 @@ export function StudentListContent() {
             <Download className="mr-2 h-4 w-4" />
             Exportar
           </Button>
+
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -192,6 +220,7 @@ export function StudentListContent() {
                 Agregar Estudiante
               </Button>
             </DialogTrigger>
+
             <DialogContent className="sm:max-w-[600px]">
               <DialogHeader>
                 <DialogTitle>Agregar Nuevo Estudiante</DialogTitle>
@@ -202,24 +231,6 @@ export function StudentListContent() {
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="studentId">ID Estudiante</Label>
-                    <Input id="studentId" placeholder="EST000" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="status">Estado</Label>
-                    <Select defaultValue="Activo">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar estado" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Activo">Activo</SelectItem>
-                        <SelectItem value="Inactivo">Inactivo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
                     <Label htmlFor="firstName">Nombre</Label>
                     <Input id="firstName" placeholder="Nombre" />
                   </div>
@@ -228,10 +239,39 @@ export function StudentListContent() {
                     <Input id="lastName" placeholder="Apellido" />
                   </div>
                 </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="direccion">Direccion</Label>
+                  <Input id="direccion" placeholder="Z, calle, avenida" />
+                </div>
+                
+
+                <div className="grid grid-cols-2 gap-4"> 
+                  <div className="space-y-2">
+                    <Label htmlFor="fecha">Fecha de Nacimiento</Label>
+                    <DatePicker />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="telefono">Telefono</Label>
+                    <Input id="telefono" placeholder="Telefono" />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Correo Electrónico</Label>
                   <Input id="email" type="email" placeholder="correo@ejemplo.com" />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="password1">Contraseña</Label>
+                    <Input id="password1" type="password" placeholder="Contraseña" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password2">Confirmar Contraseña</Label>
+                    <Input id="password2" type="password" placeholder="Confirmar Contraseña" />
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="course">Carrera</Label>
@@ -255,16 +295,12 @@ export function StudentListContent() {
                         <SelectValue placeholder="Seleccionar semestre" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1er Semestre">1er Semestre</SelectItem>
-                        <SelectItem value="2do Semestre">2do Semestre</SelectItem>
-                        <SelectItem value="3er Semestre">3er Semestre</SelectItem>
-                        <SelectItem value="4to Semestre">4to Semestre</SelectItem>
-                        <SelectItem value="5to Semestre">5to Semestre</SelectItem>
-                        <SelectItem value="6to Semestre">6to Semestre</SelectItem>
-                        <SelectItem value="7mo Semestre">7mo Semestre</SelectItem>
-                        <SelectItem value="8vo Semestre">8vo Semestre</SelectItem>
-                        <SelectItem value="9no Semestre">9no Semestre</SelectItem>
-                        <SelectItem value="10mo Semestre">10mo Semestre</SelectItem>
+                          {niveles?.map((nivel) => (
+
+                            <SelectItem key={nivel.id} value={nivel.nombre}>
+                              {nivel.nombre}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
