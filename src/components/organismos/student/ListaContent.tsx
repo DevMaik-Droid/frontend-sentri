@@ -1,20 +1,37 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Plus, Download, Upload, Search, Filter, MoreHorizontal, Edit, Trash, Eye } from "lucide-react"
-import { Button } from "../../ui/button"
-import { Card, CardContent } from "../../ui/card"
-import { Input } from "../../ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
-import { AvatarImage } from "../../atomos/avatar-image"
-import { CustomBadge } from "../../atomos/custom-badge"
+import { useEffect, useState } from "react";
+import {
+  Plus,
+  Download,
+  Upload,
+  Search,
+  Filter,
+  MoreHorizontal,
+  Edit,
+  Trash,
+  Eye,
+} from "lucide-react";
+import { Button } from "../../ui/button";
+import { Card, CardContent } from "../../ui/card";
+import { Input } from "../../ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../ui/table";
+import { AvatarImage } from "../../atomos/avatar-image";
+import { CustomBadge } from "../../atomos/custom-badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu"
+} from "../../ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -23,12 +40,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../ui/dialog"
-import { Label } from "../../ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
-import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs"
-import { GeneralService } from "../../../services/general.service"
-import { DatePicker } from "../../moleculas/DatePicker"
+} from "../../ui/dialog";
+import { Label } from "../../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
+import { GeneralService } from "../../../services/general.service";
+import { DatePicker } from "../../moleculas/DatePicker";
+import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
+import { EstudianteService } from "../../../services/estudiante/estudiante.service";
 
 // Datos de ejemplo para estudiantes
 const studentsData = [
@@ -112,7 +137,7 @@ const studentsData = [
     grade: "C+",
     avatar: "/placeholder.svg?height=32&width=32",
   },
-]
+];
 
 interface Niveles {
   id: number;
@@ -121,45 +146,58 @@ interface Niveles {
 }
 
 export function ListaContent() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedStatus, setSelectedStatus] = useState("all")
-  const [selectedCourse, setSelectedCourse] = useState("all")
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedCourse, setSelectedCourse] = useState("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   // Filtrar estudiantes basado en búsqueda y filtros
   const filteredStudents = studentsData.filter((student) => {
     const matchesSearch =
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.id.toLowerCase().includes(searchTerm.toLowerCase())
+      student.id.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = selectedStatus === "all" || student.status === selectedStatus
-    const matchesCourse = selectedCourse === "all" || student.course === selectedCourse
+    const matchesStatus =
+      selectedStatus === "all" || student.status === selectedStatus;
+    const matchesCourse =
+      selectedCourse === "all" || student.course === selectedCourse;
 
-    return matchesSearch && matchesStatus && matchesCourse
-  })
+    return matchesSearch && matchesStatus && matchesCourse;
+  });
 
   // Obtener cursos únicos para el filtro
-  const uniqueCourses = Array.from(new Set(studentsData.map((student) => student.course)))
+  const uniqueCourses = Array.from(
+    new Set(studentsData.map((student) => student.course))
+  );
 
   const [niveles, setNiveles] = useState<Niveles[]>([]);
 
-
+  const handleAddStudent = async (data: any) => {
+    try {
+      const res = await EstudianteService.registrarEstudiante(data);
+      if (res.status === 201) {
+        setIsAddDialogOpen(false);
+        toast.success("Estudiante registrado con éxito");
+      } else {
+        toast.error("Error al registrar estudiante");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const obtener_niveles = async () => {
-      try{
+      try {
         const res = await GeneralService.getNiveles();
         setNiveles(res.data);
-      }catch(error){
+      } catch (error) {
         console.log(error);
       }
-    }
+    };
     obtener_niveles();
   }, []);
-
-
-
 
   return (
     <div className="space-y-4">
@@ -225,68 +263,72 @@ export function ListaContent() {
               <DialogHeader>
                 <DialogTitle>Agregar Nuevo Estudiante</DialogTitle>
                 <DialogDescription>
-                  Complete los datos del estudiante. Todos los campos son obligatorios.
+                  Complete los datos del estudiante. Todos los campos son
+                  obligatorios.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+              <div className="flex flex-col gap-4 py-4">
+                <div className="flex gap-4">
+                  <div className="space-y-2 w-1/2">
                     <Label htmlFor="firstName">Nombre</Label>
                     <Input id="firstName" placeholder="Nombre" />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 w-1/2">
                     <Label htmlFor="lastName">Apellido</Label>
                     <Input id="lastName" placeholder="Apellido" />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="direccion">Direccion</Label>
                   <Input id="direccion" placeholder="Z, calle, avenida" />
                 </div>
-                
 
-                <div className="grid grid-cols-2 gap-4"> 
+                <div className="flex gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="fecha">Fecha de Nacimiento</Label>
                     <DatePicker />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="telefono">Cedula</Label>
+                    <Input id="telefono" placeholder="Cedula" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="telefono">Telefono</Label>
                     <Input id="telefono" placeholder="Telefono" />
                   </div>
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="genero">Genero: </Label>
+                  <RadioGroup defaultValue="comfortable" >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="M" id="r1" />
+                      <Label htmlFor="r1">Masculino</Label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="F" id="r2" />
+                      <Label htmlFor="r2">Femenino</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="email">Correo Electrónico</Label>
-                  <Input id="email" type="email" placeholder="correo@ejemplo.com" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="correo@ejemplo.com"
+                  />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="password1">Contraseña</Label>
-                    <Input id="password1" type="password" placeholder="Contraseña" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password2">Confirmar Contraseña</Label>
-                    <Input id="password2" type="password" placeholder="Confirmar Contraseña" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="course">Carrera</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar carrera" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {uniqueCourses.map((course) => (
-                          <SelectItem key={course} value={course}>
-                            {course}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="codigo">Codigo</Label>
+                    <Input
+                    id="codigo"
+                    type="text"
+                    placeholder="XXXXXXXX"
+                  />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="semester">Semestre</Label>
@@ -295,22 +337,26 @@ export function ListaContent() {
                         <SelectValue placeholder="Seleccionar semestre" />
                       </SelectTrigger>
                       <SelectContent>
-                          {niveles?.map((nivel) => (
-
-                            <SelectItem key={nivel.id} value={nivel.nombre}>
-                              {nivel.nombre}
-                            </SelectItem>
-                          ))}
+                        {niveles?.map((nivel) => (
+                          <SelectItem key={nivel.id} value={nivel.nombre}>
+                            {nivel.nombre}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddDialogOpen(false)}
+                >
                   Cancelar
                 </Button>
-                <Button onClick={() => setIsAddDialogOpen(false)}>Guardar Estudiante</Button>
+                <Button onClick={handleAddStudent}>
+                  Guardar Estudiante
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -344,7 +390,10 @@ export function ListaContent() {
             <TableBody>
               {filteredStudents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-8 text-muted-foreground"
+                  >
                     No se encontraron estudiantes con los criterios de búsqueda.
                   </TableCell>
                 </TableRow>
@@ -354,22 +403,34 @@ export function ListaContent() {
                     <TableCell className="font-medium">{student.id}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.name} size="md" />
+                        <AvatarImage
+                          src={student.avatar || "/placeholder.svg"}
+                          alt={student.name}
+                          size="md"
+                        />
                         <div>
                           <div className="font-medium">{student.name}</div>
-                          <div className="text-sm text-muted-foreground">{student.email}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {student.email}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>{student.course}</TableCell>
                     <TableCell>{student.semester}</TableCell>
                     <TableCell>
-                      <CustomBadge variant={student.status === "Activo" ? "default" : "secondary"}>
+                      <CustomBadge
+                        variant={
+                          student.status === "Activo" ? "default" : "secondary"
+                        }
+                      >
                         {student.status}
                       </CustomBadge>
                     </TableCell>
                     <TableCell>
-                      <CustomBadge variant="outline">{student.grade}</CustomBadge>
+                      <CustomBadge variant="outline">
+                        {student.grade}
+                      </CustomBadge>
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
@@ -406,7 +467,8 @@ export function ListaContent() {
       {/* Paginación */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Mostrando <strong>{filteredStudents.length}</strong> de <strong>{studentsData.length}</strong> estudiantes
+          Mostrando <strong>{filteredStudents.length}</strong> de{" "}
+          <strong>{studentsData.length}</strong> estudiantes
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" disabled>
@@ -424,5 +486,5 @@ export function ListaContent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
