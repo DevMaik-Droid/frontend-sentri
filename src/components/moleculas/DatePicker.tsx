@@ -7,8 +7,17 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../ui/popover"
-export function DatePicker() {
+} from "../ui/popover";
+import type { UseFormSetValue } from "react-hook-form"
+import type { Estudiante } from "../../types/estudiante/estudiante-types"
+import { format } from "date-fns"
+
+
+interface Props {
+  setValue: UseFormSetValue<Estudiante>;
+}
+
+export function DatePicker({  setValue }: Props) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   return (
@@ -32,6 +41,7 @@ export function DatePicker() {
             onSelect={(date) => {
               setDate(date)
               setOpen(false)
+              setValue("usuario.fecha_nacimiento", format(String(date), "yyyy-MM-dd"))
             }}
           />
         </PopoverContent>

@@ -1,5 +1,5 @@
-import { ListaContent } from "../../components/organismos/student/ListaContent";
+import { ContentMain } from "../../components/organismos/student/ContentMain";
 
 export default function ListaEstudiantes() {
-  return <ListaContent />
+  return <ContentMain />
 }

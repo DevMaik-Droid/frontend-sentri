@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import {
-  Plus,
   Download,
   Upload,
   Search,
@@ -11,6 +10,7 @@ import {
   Edit,
   Trash,
   Eye,
+  Plus,
 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Card, CardContent } from "../../ui/card";
@@ -32,16 +32,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
-import { Label } from "../../ui/label";
+
 import {
   Select,
   SelectContent,
@@ -51,9 +42,11 @@ import {
 } from "../../ui/select";
 import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 import { GeneralService } from "../../../services/general.service";
-import { DatePicker } from "../../moleculas/DatePicker";
-import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
+import { CustomDialog } from "../../moleculas/CustomDialog";
+import { FormularioRegistro } from "../../moleculas/estudiante/FormularioRegistro";
 import { EstudianteService } from "../../../services/estudiante/estudiante.service";
+import type { Estudiante } from "../../../types/estudiante/estudiante-types";
+import { useForm } from "react-hook-form";
 
 // Datos de ejemplo para estudiantes
 const studentsData = [
@@ -145,11 +138,16 @@ interface Niveles {
   description: string;
 }
 
-export function ListaContent() {
+interface Materias {
+  id: number;
+  nombre: string;
+  description: string;
+}
+
+export function ContentMain() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedCourse, setSelectedCourse] = useState("all");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   // Filtrar estudiantes basado en búsqueda y filtros
   const filteredStudents = studentsData.filter((student) => {
@@ -166,26 +164,10 @@ export function ListaContent() {
     return matchesSearch && matchesStatus && matchesCourse;
   });
 
-  // Obtener cursos únicos para el filtro
-  const uniqueCourses = Array.from(
-    new Set(studentsData.map((student) => student.course))
-  );
-
   const [niveles, setNiveles] = useState<Niveles[]>([]);
+  const [materias, setMaterias] = useState<Materias[]>([]);
 
-  const handleAddStudent = async (data: any) => {
-    try {
-      const res = await EstudianteService.registrarEstudiante(data);
-      if (res.status === 201) {
-        setIsAddDialogOpen(false);
-        toast.success("Estudiante registrado con éxito");
-      } else {
-        toast.error("Error al registrar estudiante");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { register, handleSubmit, setValue, reset } = useForm<Estudiante>();
 
   useEffect(() => {
     const obtener_niveles = async () => {
@@ -196,8 +178,35 @@ export function ListaContent() {
         console.log(error);
       }
     };
+    const obtener_materias = async () => {
+      try {
+        const res = await GeneralService.getMaterias();
+        setMaterias(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     obtener_niveles();
+    obtener_materias();
   }, []);
+
+  const registrarEstudiante = async (estudiante: Estudiante) => {
+    estudiante.usuario.password_hash = estudiante.usuario.cedula;
+    estudiante.usuario.rol_id = 3;
+
+    console.log(estudiante);
+    try {
+      const response = await EstudianteService.registrarEstudiante(estudiante);
+      if (response.result === "ok") {
+        console.log(response.message);
+        reset();
+      } else {
+        console.log("Error al registrar estudiante");
+      }
+    } catch (error) {
+      console.log("Error al registrar estudiante", error);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -224,9 +233,12 @@ export function ListaContent() {
               <SelectValue placeholder="Filtrar por estado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los estados</SelectItem>
-              <SelectItem value="Activo">Activo</SelectItem>
-              <SelectItem value="Inactivo">Inactivo</SelectItem>
+              <SelectItem value="all">Todos los semestres</SelectItem>
+              {niveles?.map((nivel) => (
+                <SelectItem key={nivel.id} value={String(nivel.id)}>
+                  {nivel.nombre}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={selectedCourse} onValueChange={setSelectedCourse}>
@@ -234,10 +246,10 @@ export function ListaContent() {
               <SelectValue placeholder="Filtrar por carrera" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todas las carreras</SelectItem>
-              {uniqueCourses.map((course) => (
-                <SelectItem key={course} value={course}>
-                  {course}
+              <SelectItem value="all">Todas las materias</SelectItem>
+              {materias?.map((materia) => (
+                <SelectItem key={materia.id} value={String(materia.id)}>
+                  {materia.nombre}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -251,115 +263,20 @@ export function ListaContent() {
             Exportar
           </Button>
 
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Agregar Estudiante
-              </Button>
-            </DialogTrigger>
-
-            <DialogContent className="sm:max-w-[600px]">
-              <DialogHeader>
-                <DialogTitle>Agregar Nuevo Estudiante</DialogTitle>
-                <DialogDescription>
-                  Complete los datos del estudiante. Todos los campos son
-                  obligatorios.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex flex-col gap-4 py-4">
-                <div className="flex gap-4">
-                  <div className="space-y-2 w-1/2">
-                    <Label htmlFor="firstName">Nombre</Label>
-                    <Input id="firstName" placeholder="Nombre" />
-                  </div>
-                  <div className="space-y-2 w-1/2">
-                    <Label htmlFor="lastName">Apellido</Label>
-                    <Input id="lastName" placeholder="Apellido" />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="direccion">Direccion</Label>
-                  <Input id="direccion" placeholder="Z, calle, avenida" />
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fecha">Fecha de Nacimiento</Label>
-                    <DatePicker />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="telefono">Cedula</Label>
-                    <Input id="telefono" placeholder="Cedula" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="telefono">Telefono</Label>
-                    <Input id="telefono" placeholder="Telefono" />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="genero">Genero: </Label>
-                  <RadioGroup defaultValue="comfortable" >
-                    <div className="flex items-center gap-3">
-                      <RadioGroupItem value="M" id="r1" />
-                      <Label htmlFor="r1">Masculino</Label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <RadioGroupItem value="F" id="r2" />
-                      <Label htmlFor="r2">Femenino</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Correo Electrónico</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="correo@ejemplo.com"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="codigo">Codigo</Label>
-                    <Input
-                    id="codigo"
-                    type="text"
-                    placeholder="XXXXXXXX"
-                  />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="semester">Semestre</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar semestre" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {niveles?.map((nivel) => (
-                          <SelectItem key={nivel.id} value={nivel.nombre}>
-                            {nivel.nombre}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAddDialogOpen(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button onClick={handleAddStudent}>
-                  Guardar Estudiante
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <CustomDialog
+            triggerLabel="Agregar Estudiante"
+            title="Agregar Estudiante"
+            description="Agrega un nuevo estudiante"
+            triggerIcon={<Plus className="mr-2 h-4 w-4" />}
+            confirmLabel="Agregar Estudiante"
+            onConfirm={handleSubmit(registrarEstudiante)}
+          >
+            <FormularioRegistro
+              register={register}
+              setValue={setValue}
+              niveles={niveles}
+            ></FormularioRegistro>
+          </CustomDialog>
         </div>
       </div>
 
