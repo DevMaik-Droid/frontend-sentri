@@ -18,12 +18,13 @@ import { ChevronRight, GraduationCap } from "lucide-react"
 
 
 
+
 export function AppSidebar({ sidebarMenu } : { sidebarMenu: MenuGrupo[] }) {
   const navigate = useNavigate()
-
   const handleNavigation = (url: string) => {
     navigate(url)
   }
+
 
   return (
     <Sidebar collapsible="icon" className="border-r" variant="sidebar">
@@ -35,7 +36,7 @@ export function AppSidebar({ sidebarMenu } : { sidebarMenu: MenuGrupo[] }) {
                 <GraduationCap className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold">Edu Admin</span>
+                <span className="font-semibold">Edu Sentri</span>
                 <span className="text-xs text-muted-foreground">Sistema Académico</span>
               </div>
               <ChevronRight className="ml-auto size-4 transition-transform group-data-[state=expanded]:rotate-90" />
@@ -49,7 +50,7 @@ export function AppSidebar({ sidebarMenu } : { sidebarMenu: MenuGrupo[] }) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <UserMenu variant="sidebar" userName="Admin User" />
+            <UserMenu variant="sidebar"/>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

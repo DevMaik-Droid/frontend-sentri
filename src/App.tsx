@@ -1,4 +1,4 @@
-import { RouterProvider } from './router-provider';
+import { RouterProvider } from './routes/router-provider';
 import './styles/globals.css'
 
 // App.tsx

@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { AvatarImage } from "../atomos/avatar-image"
+import { useAuth } from "../../hooks/useAuth"
+
 
 interface UserMenuProps {
   userName?: string
@@ -17,6 +19,10 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ userName = "Admin User", userAvatar, variant = "header" }: UserMenuProps) {
+
+  const { usuario, logout } = useAuth()
+  userName = `${usuario?.nombre}`
+
   if (variant === "sidebar") {
     return (
       <DropdownMenu>
@@ -32,7 +38,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
           <DropdownMenuItem>Perfil</DropdownMenuItem>
           <DropdownMenuItem>Configuración</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
+          <DropdownMenuItem  onClick={() => logout()}>Cerrar Sesión</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     )

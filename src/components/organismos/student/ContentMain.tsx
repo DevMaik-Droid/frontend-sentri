@@ -48,6 +48,7 @@ import { EstudianteService } from "../../../services/estudiante/estudiante.servi
 import type { Estudiante } from "../../../types/estudiante/estudiante-types";
 import { useForm } from "react-hook-form";
 
+import toast, { Toaster } from "react-hot-toast";
 // Datos de ejemplo para estudiantes
 const studentsData = [
   {
@@ -193,12 +194,11 @@ export function ContentMain() {
   const registrarEstudiante = async (estudiante: Estudiante) => {
     estudiante.usuario.password_hash = estudiante.usuario.cedula;
     estudiante.usuario.rol_id = 3;
-
     console.log(estudiante);
     try {
       const response = await EstudianteService.registrarEstudiante(estudiante);
       if (response.result === "ok") {
-        console.log(response.message);
+        toast.success(response.message);
         reset();
       } else {
         console.log("Error al registrar estudiante");
@@ -210,6 +210,7 @@ export function ContentMain() {
 
   return (
     <div className="space-y-4">
+      <Toaster></Toaster>
       {/* Barra de herramientas */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-1 items-center gap-2">

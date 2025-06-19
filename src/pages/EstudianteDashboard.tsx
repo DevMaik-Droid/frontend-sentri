@@ -14,10 +14,11 @@ import {
   BarChart3,
   Settings,
   HelpCircle,
-} from "lucide-react"
-import type { MenuGrupo } from "../types/sidebar-menu"
-import { DashboardLayout } from "../components/templates/dashboard-layout"
-import type { AppNavbarProps } from "../types/navbar-props"
+} from "lucide-react";
+import type { MenuGrupo } from "../types/sidebar-menu";
+import { DashboardLayout } from "../components/templates/dashboard-layout";
+import type { AppNavbarProps } from "../types/navbar-props";
+import { useAuth } from "../hooks/useAuth";
 
 const sidebarMenu: MenuGrupo[] = [
   {
@@ -47,7 +48,10 @@ const sidebarMenu: MenuGrupo[] = [
         submenu: [
           { titulo: "Notas Actuales", url: "#/calificaciones/actuales" },
           { titulo: "Historial", url: "#/calificaciones/historial" },
-          { titulo: "Boleta de Calificaciones", url: "#/calificaciones/boleta" },
+          {
+            titulo: "Boleta de Calificaciones",
+            url: "#/calificaciones/boleta",
+          },
         ],
       },
       {
@@ -58,6 +62,15 @@ const sidebarMenu: MenuGrupo[] = [
           { titulo: "Mi Asistencia", url: "#/asistencia/mi-asistencia" },
           { titulo: "Justificaciones", url: "#/asistencia/justificaciones" },
           { titulo: "Reportes", url: "#/asistencia/reportes" },
+        ],
+      },
+      {
+        titulo: "Inscripcciones",
+        url: "/inscripciones",
+        icon: UserCheck,
+        submenu: [
+          { titulo: "Materias", url: "inscripcion/materias" },
+          { titulo: "Talleres", url: "/inscripcciones/talleres" }
         ],
       },
     ],
@@ -146,25 +159,26 @@ const sidebarMenu: MenuGrupo[] = [
       },
     ],
   },
-]
+];
 
-const navbarProps: AppNavbarProps = {
-  titulo: "Portal Estudiante",
-  subtitulo: "Ana García - Ingeniería de Software",
-  userName: "Ana García",
-  userAvatar: "/placeholder.svg?height=32&width=32",
-  searchPlaceholder: "Buscar materias, tareas...",
-  showCalendar: true,
-  showMessages: true,
-  showNotifications: true,
-}
+export default function EstudianteDashboard() {
+  const { usuario } = useAuth();
 
-export function EstudianteDashboard() {
+  const navbarProps: AppNavbarProps = {
+    titulo: "Portal Estudiante",
+    userName: `${usuario?.nombre} ${usuario?.apellido}`,
+    subtitulo: `${usuario?.nombre} - Ingeniería de Sistemas`,
+    userAvatar: "/placeholder.svg?height=32&width=32",
+    searchPlaceholder: "Buscar materias, tareas...",
+    showCalendar: true,
+    showMessages: true,
+    showNotifications: true,
+  };
+
   return (
-
-    <DashboardLayout sidebarMenu={sidebarMenu} navbaritems={navbarProps}>
-      
-    </DashboardLayout>
-
-  )
+    <DashboardLayout
+      sidebarMenu={sidebarMenu}
+      navbaritems={navbarProps}
+    ></DashboardLayout>
+  );
 }

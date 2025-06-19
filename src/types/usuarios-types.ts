@@ -1,6 +1,6 @@
 export interface Usuario{
     id?: number | null
-    nombre?: string | null
+    nombre: string
     apellido?: string | null
     fecha_nacimiento?: Date | string | null
     cedula?: string | null
@@ -11,5 +11,6 @@ export interface Usuario{
     password_hash?: string | null
     foto_perfil?: string | null
     estado?: string | null
+    rol: "ADMIN" | "DOCENTE" | "ESTUDIANTE"
     rol_id?: number | null
 }
