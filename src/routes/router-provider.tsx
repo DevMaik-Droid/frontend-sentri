@@ -20,6 +20,9 @@ import Login from "../pages/Login";
 import PrivateRoutes from "./PrivateRoutes";
 import EstudianteDashboard from "../pages/EstudianteDashboard";
 import FrameRegistrarMateria from "../components/organismos/student/FrameRegistrarMateria";
+import CrearParalelo from "../pages/materias/CrearParalelo";
+import AdministrarParalelo from "../pages/materias/AdministrarParalelo";
+
 
 export function RouterProvider() {
   return (
@@ -39,6 +42,9 @@ export function RouterProvider() {
             <Route path="estudiantes/asistencia" element={<StudentAttendanceView />}/>
             <Route path="estudiantes/calificaciones" element={<StudentGradesView />}/>
             <Route path="estudiantes/expedientes" element={<StudentRecordsView />}/>
+
+            <Route path="horarios/paralelo" element={<CrearParalelo />}/>
+            <Route path="horarios/paralelo/administrar" element={<AdministrarParalelo />}/>
           </Route>
         </Route>
 

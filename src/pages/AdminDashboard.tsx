@@ -76,6 +76,7 @@ const sidebarMenu: MenuGrupo[] = [
       },
     ],
   },
+
   {
     titulo: "Periodos Académicos",
     items: [
@@ -131,6 +132,15 @@ const sidebarMenu: MenuGrupo[] = [
   {
     titulo: "Administración",
     items: [
+      {
+        titulo: "Horarios",
+        url: "/horarios",
+        icon: BarChart3,
+        submenu: [
+          { titulo: "Crear Paralelo", url: "horarios/paralelo" },
+          { titulo: "Administrar Paralelo", url: "horarios/paralelo/administrar" }
+        ],
+      },
       {
         titulo: "Reportes",
         url: "/reportes",
