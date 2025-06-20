@@ -4,6 +4,7 @@ import { DashboardHeader } from "../organismos/AppNavbar";
 import type { MenuGrupo } from "../../types/sidebar-menu";
 import type { AppNavbarProps } from "../../types/navbar-props";
 import { Outlet } from "react-router-dom";
+import FloatingChat from "../organismos/floating-chat";
 type DashboardLayoutProps = {
   sidebarMenu: MenuGrupo[];
   navbaritems: AppNavbarProps;
@@ -14,12 +15,18 @@ export function DashboardLayout({
   navbaritems,
 }: DashboardLayoutProps) {
   return (
-    <SidebarProvider>
-      <AppSidebar sidebarMenu={sidebarMenu} />
-      <SidebarInset>
-        <DashboardHeader {...navbaritems} />
-        <main className="flex-1 overflow-auto p-4"><Outlet/></main>
-      </SidebarInset>
-    </SidebarProvider>
+    <>
+      <SidebarProvider>
+        <AppSidebar sidebarMenu={sidebarMenu} />
+        <SidebarInset>
+          <DashboardHeader {...navbaritems} />
+          <main className="flex-1 overflow-auto p-4"><Outlet/></main>
+        </SidebarInset>
+      </SidebarProvider>
+
+
+      <FloatingChat></FloatingChat>
+    </>
+    
   );
 }

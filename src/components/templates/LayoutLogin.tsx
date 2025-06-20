@@ -39,7 +39,7 @@ export default function LayoutLogin() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-gray-500">
-          <p>© 2024 EduSystem. Todos los derechos reservados.</p>
+          <p>&copy; 2025 Edu Sentri. Todos los derechos reservados.</p>
           <div className="flex justify-center space-x-4 mt-2">
             <Button variant="link" className="px-0 text-xs">
               Términos de Servicio

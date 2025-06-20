@@ -46,7 +46,7 @@ export default function LayoutCrearParalelos() {
 
           <TabsContent value="horarios">
             <Card className="border-0 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-t-lg">
+              <CardHeader className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-t-lg p-4">
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="w-5 h-5" />
                   Crear Nuevo Horario

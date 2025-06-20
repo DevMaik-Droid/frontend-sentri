@@ -19,7 +19,7 @@ import type {
   Materias,
   Niveles,
   Paralelo,
-} from "../../../types/general/materia-types";
+} from "../../../types/general/general-types";
 import toast, { Toaster } from "react-hot-toast";
 
 const mockTeachers = [

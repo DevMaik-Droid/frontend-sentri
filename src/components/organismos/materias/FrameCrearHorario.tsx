@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../../ui/button"
 import { Label } from "../../ui/label"
 import { Input } from "../../ui/input"
@@ -9,109 +9,157 @@ import { Badge } from "../../ui/badge"
 import { Checkbox } from "../../ui/checkbox"
 import { Clock, Plus, Trash2, Users, MapPin } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
+import type { Aula, GetParalelo, Horario, Niveles } from "../../../types/general/general-types"
+import { GeneralService } from "../../../services/general.service"
+import toast, { Toaster } from "react-hot-toast"
 
 const daysOfWeek = [
-  { id: "monday", label: "Lunes", short: "L" },
-  { id: "tuesday", label: "Martes", short: "M" },
-  { id: "wednesday", label: "Miércoles", short: "X" },
-  { id: "thursday", label: "Jueves", short: "J" },
-  { id: "friday", label: "Viernes", short: "V" },
-  { id: "saturday", label: "Sábado", short: "S" },
+  { id: "Lunes", label: "Lunes", short: "Lun" },
+  { id: "Martes", label: "Martes", short: "Mar" },
+  { id: "Miercoles", label: "Miércoles", short: "Mie" },
+  { id: "Jueves", label: "Jueves", short: "Jue" },
+  { id: "Viernes", label: "Viernes", short: "Vie" },
+  { id: "Sabado", label: "Sábado", short: "Sab" },
 ]
-
-const mockParallels = [
-  "Paralelo A - Ingeniería",
-  "Paralelo B - Ingeniería",
-  "Paralelo C - Medicina",
-  "Paralelo D - Derecho",
-  "Paralelo A - Arquitectura",
-]
-
-const mockClassrooms = [
-  "Aula 101",
-  "Aula 102",
-  "Aula 201",
-  "Aula 202",
-  "Laboratorio A",
-  "Laboratorio B",
-  "Auditorio Principal",
-]
-
-interface ScheduleBlock {
-  id: string
-  startTime: string
-  endTime: string
-  days: string[]
-  parallel: string
-  classroom: string
-}
 
 export default function FrameCrearHorario() {
-  const [startTime, setStartTime] = useState("")
-  const [endTime, setEndTime] = useState("")
-  const [selectedDays, setSelectedDays] = useState<string[]>([])
-  const [scheduleBlocks, setScheduleBlocks] = useState<ScheduleBlock[]>([])
-  const [selectedParallel, setSelectedParallel] = useState("")
-  const [selectedClassroom, setSelectedClassroom] = useState("")
+  const [horaInicio, setHoraInicio] = useState("")
+  const [horaFin, setHoraFin] = useState("")
+  const [diasSeleccionados, setDiasSeleccionados] = useState<string[]>([])
+  const [bloquesHorarios, setBloquesHorarios] = useState<Horario[]>([])
+  const [paraleloSeleccionado, setParaleloSeleccionado] = useState("")
+  const [aulaSeleccionada, setAulaSeleccionada] = useState("")
+  const [nivelSeleccionado, setNivelSeleccionado] = useState("")
+
+  const [paralelos, setParalelos] = useState<Array<GetParalelo>>([])
+  const [aulas, setAulas] = useState<Array<Aula>>([])
+  const [niveles, setNiveles] = useState<Array<Niveles>>([])
+
+  useEffect(() => {
+    const obtenerNiveles = async () => {
+      try {
+        const res = await GeneralService.getNiveles();
+        setNiveles(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    const obtener_paralelos = async () => {
+      try {
+        const res = await GeneralService.getParalelos();
+        setParalelos(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const obtener_aulas = async () => {
+      try {
+        const res = await GeneralService.getAulas();
+        setAulas(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+    obtenerNiveles();
+    obtener_paralelos();
+    obtener_aulas();
+
+  }, [])
 
   const handleDayToggle = (dayId: string) => {
-    setSelectedDays((prev) => (prev.includes(dayId) ? prev.filter((d) => d !== dayId) : [...prev, dayId]))
+    setDiasSeleccionados((prev) => (prev.includes(dayId) ? prev.filter((d) => d !== dayId) : [...prev, dayId]))
   }
 
   const addScheduleBlock = () => {
-    if (startTime && endTime && selectedDays.length > 0 && selectedParallel && selectedClassroom) {
-      const newBlock: ScheduleBlock = {
-        id: Date.now().toString(),
-        startTime,
-        endTime,
-        days: [...selectedDays],
-        parallel: selectedParallel,
-        classroom: selectedClassroom,
+    if (horaInicio && horaFin && diasSeleccionados.length > 0 && paraleloSeleccionado && aulaSeleccionada) {
+      const bloqueHorario : Horario = {
+        dias_semana: diasSeleccionados,
+        hora_inicio: horaInicio,
+        hora_fin: horaFin,
+        paralelo_id: Number(paraleloSeleccionado),
+        aula_id: Number(aulaSeleccionada)
       }
-      setScheduleBlocks([...scheduleBlocks, newBlock])
+      setBloquesHorarios([...bloquesHorarios, bloqueHorario])
 
       // Reset form
-      setStartTime("")
-      setEndTime("")
-      setSelectedDays([])
-      setSelectedParallel("")
-      setSelectedClassroom("")
+      setHoraInicio("")
+      setHoraFin("")
+      setDiasSeleccionados([])
+      setParaleloSeleccionado("")
+      setAulaSeleccionada("")
     }
   }
+  const paralelosFiltrados = paralelos.filter((paralelo) => paralelo.nivel_id === Number(nivelSeleccionado))
+  .sort((paraleloA, paraleloB) => paraleloA.materia.localeCompare(paraleloB.materia));
 
-  const removeScheduleBlock = (id: string) => {
-    setScheduleBlocks(scheduleBlocks.filter((block) => block.id !== id))
+  const removeScheduleBlock = (id: number) => {
+    setBloquesHorarios(bloquesHorarios.filter((_, index) => index !== id))
   }
 
   const getDayLabel = (dayId: string) => {
     return daysOfWeek.find((d) => d.id === dayId)?.short || dayId
   }
 
-  const handleSubmit = () => {
-    console.log({
-      parallel: selectedParallel,
-      classroom: selectedClassroom,
-      scheduleBlocks,
-    })
+  const handleSubmit = async () => {
+    console.log(bloquesHorarios)
     // Aquí iría la lógica para guardar el horario
+
+    try{
+      const response = await GeneralService.crearHorario(bloquesHorarios);
+      console.log(response);
+      if (response.result === "ok") {
+        toast.success(response.message);
+        setBloquesHorarios([]);
+      }else{
+        toast.error(response.message);
+      }
+      
+    }catch(error){
+      console.log(error);
+    }
   }
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <Toaster></Toaster>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            Nivel
+          </Label>
+          <Select value={nivelSeleccionado} onValueChange={setNivelSeleccionado}>
+            <SelectTrigger className="border-slate-300 focus:border-emerald-500">
+              <SelectValue placeholder="Seleccionar nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              {niveles.map((nivel) => (
+                <SelectItem key={nivel.id} value={String(nivel.id)}>
+                  {nivel.nombre}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-2">
           <Label className="text-sm font-medium flex items-center gap-2">
             <Users className="w-4 h-4" />
             Paralelo
           </Label>
-          <Select value={selectedParallel} onValueChange={setSelectedParallel}>
+          <Select value={paraleloSeleccionado} onValueChange={setParaleloSeleccionado}>
             <SelectTrigger className="border-slate-300 focus:border-emerald-500">
               <SelectValue placeholder="Seleccionar paralelo" />
             </SelectTrigger>
             <SelectContent>
-              {mockParallels.map((parallel) => (
-                <SelectItem key={parallel} value={parallel}>
-                  {parallel}
+              {paralelosFiltrados.map((paralelo) => (
+                <SelectItem key={paralelo.id} value={String(paralelo.id)}>
+                  <div className="flex flex-row gap-4">
+                    <p className="font-medium text-sm leading-none ">{paralelo.paralelo}</p>
+                    <p className="text-xs text-muted-foreground">{paralelo.materia}</p>
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -123,14 +171,14 @@ export default function FrameCrearHorario() {
             <MapPin className="w-4 h-4" />
             Aula
           </Label>
-          <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
+          <Select value={aulaSeleccionada} onValueChange={setAulaSeleccionada}>
             <SelectTrigger className="border-slate-300 focus:border-emerald-500">
               <SelectValue placeholder="Seleccionar aula" />
             </SelectTrigger>
             <SelectContent>
-              {mockClassrooms.map((classroom) => (
-                <SelectItem key={classroom} value={classroom}>
-                  {classroom}
+              {aulas?.map((aula) => (
+                <SelectItem key={aula.id} value={String(aula.id)}>
+                  {aula.nombre}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -154,8 +202,11 @@ export default function FrameCrearHorario() {
               </Label>
               <Input
                 type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+                min={"08:00"}
+                max={"22:30"}
+                step={900}
+                value={horaInicio}
+                onChange={(e) => setHoraInicio(e.target.value)}
                 className="border-slate-300 focus:border-emerald-500"
               />
             </div>
@@ -167,8 +218,8 @@ export default function FrameCrearHorario() {
               </Label>
               <Input
                 type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
+                value={horaFin}
+                onChange={(e) => setHoraFin(e.target.value)}
                 className="border-slate-300 focus:border-emerald-500"
               />
             </div>
@@ -181,7 +232,7 @@ export default function FrameCrearHorario() {
                 <div key={day.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={day.id}
-                    checked={selectedDays.includes(day.id)}
+                    checked={diasSeleccionados.includes(day.id)}
                     onCheckedChange={() => handleDayToggle(day.id)}
                     className="border-slate-300"
                   />
@@ -195,7 +246,7 @@ export default function FrameCrearHorario() {
 
           <Button
             onClick={addScheduleBlock}
-            disabled={!startTime || !endTime || selectedDays.length === 0 || !selectedParallel || !selectedClassroom}
+            disabled={!horaInicio || !horaFin || diasSeleccionados.length === 0 || !paraleloSeleccionado || !aulaSeleccionada}
             className="w-full bg-emerald-500 hover:bg-emerald-600"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -204,30 +255,36 @@ export default function FrameCrearHorario() {
         </CardContent>
       </Card>
 
-      {scheduleBlocks.length > 0 && (
+      {bloquesHorarios.length > 0 && (
         <Card className="border-slate-200">
           <CardHeader>
-            <CardTitle className="text-lg">Vista Previa del Horario</CardTitle>
+            <CardTitle className="text-lg">Lista de Horarios a Registrar</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {scheduleBlocks.map((block) => (
+              {bloquesHorarios.map((block, index) => (
                 <div
-                  key={block.id}
+                  key={index}
                   className="flex items-center justify-between bg-white p-4 rounded-lg border border-slate-200 shadow-sm"
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-center">
                       <div className="text-sm font-medium text-emerald-600">
-                        {block.startTime} - {block.endTime}
+                        <p>Hora:</p>
+                        {block.hora_inicio} - {block.hora_fin}
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <div className="text-sm text-slate-600">
-                        {block.parallel} • {block.classroom}
+                      <div className="text-sm text-slate-600 w-full" >
+                        <div className="flex gap-5">
+                          <p>Materia: <strong> {paralelosFiltrados.find((p) => p.id === block.paralelo_id)?.materia} </strong></p>
+                          <p>Paralelo: <strong>{paralelos.find((p) => p.id === block.paralelo_id)?.paralelo} </strong> </p>
+                          <p>Aula: <strong> {aulas.find((a) => a.id === block.aula_id)?.nombre}</strong></p>
+                        </div>
                       </div>
                       <div className="flex gap-1">
-                        {block.days.map((dayId) => (
+                        <p>Días:</p>
+                        {block.dias_semana.map((dayId) => (
                           <Badge key={dayId} variant="secondary" className="text-xs bg-emerald-100 text-emerald-800">
                             {getDayLabel(dayId)}
                           </Badge>
@@ -235,11 +292,12 @@ export default function FrameCrearHorario() {
                       </div>
                     </div>
                   </div>
+
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
-                    onClick={() => removeScheduleBlock(block.id)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    onClick={() => removeScheduleBlock(index)}
+                    className="text-red-500 hover:text-red-50 hover:bg-red-700 cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -253,7 +311,7 @@ export default function FrameCrearHorario() {
       <div className="flex justify-end">
         <Button
           onClick={handleSubmit}
-          disabled={!selectedParallel || !selectedClassroom || scheduleBlocks.length === 0}
+          disabled={bloquesHorarios.length === 0}
           className="bg-emerald-500 hover:bg-emerald-600 px-8"
         >
           Crear Horario
