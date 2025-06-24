@@ -1,4 +1,4 @@
-import type { Horarios, Paralelos } from "../types/general/general-types";
+import type { Consulta, Horarios, Paralelos } from "../types/general/general-types";
 import { api } from "./api";
 
 
@@ -28,6 +28,10 @@ export const GeneralService = {
         return response.data;
     },
 
+    consultarIA : async (mensaje : Consulta) => {
+        const response = await api.post("/chat/pregunta", mensaje);
+        return response.data;
+    },
     login : async (username : string, password : string) => {
         const response = await api.post("usuario/login", {username, password});
         return response.data;

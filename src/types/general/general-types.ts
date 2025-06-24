@@ -70,3 +70,6 @@ export interface ParaleloCompleto {
   horario : Horarios;
 
 }
+export interface Consulta {
+  pregunta: string;
+}
