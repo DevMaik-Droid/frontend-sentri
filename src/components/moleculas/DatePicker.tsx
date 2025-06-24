@@ -9,12 +9,12 @@ import {
   PopoverTrigger,
 } from "../ui/popover";
 import type { UseFormSetValue } from "react-hook-form"
-import type { Estudiante } from "../../types/estudiante/estudiante-types"
+import type { EstudianteCompleto } from "../../types/estudiante/estudiante-types"
 import { format } from "date-fns"
 
 
 interface Props {
-  setValue: UseFormSetValue<Estudiante>;
+  setValue: UseFormSetValue<EstudianteCompleto>;
 }
 
 export function DatePicker({  setValue }: Props) {

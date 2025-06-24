@@ -19,6 +19,8 @@ import type { MenuGrupo } from "../types/sidebar-menu";
 import { DashboardLayout } from "../components/templates/dashboard-layout";
 import type { AppNavbarProps } from "../types/navbar-props";
 import { useAuth } from "../hooks/useAuth";
+import { Navigate } from "react-router-dom";
+
 
 const sidebarMenu: MenuGrupo[] = [
   {
@@ -163,6 +165,14 @@ const sidebarMenu: MenuGrupo[] = [
 
 export default function EstudianteDashboard() {
   const { usuario } = useAuth();
+  
+
+  if (!usuario) {
+    return <Navigate to="/login" replace />;
+  }
+  
+
+  
 
   const navbarProps: AppNavbarProps = {
     titulo: "Portal Estudiante",

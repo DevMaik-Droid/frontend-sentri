@@ -18,7 +18,7 @@ import { GeneralService } from "../../../services/general.service";
 import type {
   Materias,
   Niveles,
-  Paralelo,
+  Paralelos,
 } from "../../../types/general/general-types";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -39,7 +39,7 @@ export default function FrameCrearParalelo() {
   const [gestionSeleccionada, setGestionSeleccionada] = useState("");
   const [docenteSeleccionado, setDocenteSeleccionado] = useState("");
   const [cupos, setCupos] = useState("");
-  const [assignments, setAssignments] = useState<Array<Paralelo>>([]);
+  const [assignments, setAssignments] = useState<Array<Paralelos>>([]);
 
   const [nivelSeleccionado, setNivelSeleccionado] = useState("");
 
@@ -82,6 +82,7 @@ export default function FrameCrearParalelo() {
           cupos: Number(cupos),
         },
       ]);
+
       setMateriaSeleccionada("");
       setDocenteSeleccionado("");
       setCupos("");

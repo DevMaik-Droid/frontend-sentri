@@ -1,16 +1,16 @@
-export interface Usuario{
-    id?: number | null
+export interface Usuarios{
+    id?: number
     nombre: string
-    apellido?: string | null
-    fecha_nacimiento?: Date | string | null
-    cedula?: string | null
-    genero?: string | null
-    direccion?: string | null
-    telefono?: string | null
-    email?: string | null
-    password_hash?: string | null
-    foto_perfil?: string | null
-    estado?: string | null
+    apellido?: string
+    fecha_nacimiento?: string
+    cedula?: string
+    genero?: string
+    direccion?: string
+    telefono?: string
+    email?: string
+    password_hash?: string
+    foto_perfil?: string
+    estado?: string
     rol: "ADMIN" | "DOCENTE" | "ESTUDIANTE"
-    rol_id?: number | null
+    rol_id?: number
 }

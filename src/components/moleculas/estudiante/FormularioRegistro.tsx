@@ -11,12 +11,13 @@ import {
 } from "../../ui/select";
 import { DatePicker } from "../DatePicker";
 import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
-import type { Estudiante } from "../../../types/estudiante/estudiante-types";
+import type { EstudianteCompleto } from "../../../types/estudiante/estudiante-types";
+import type { Niveles } from "../../../types/general/general-types";
 
 interface Props {
-  register: UseFormRegister<Estudiante>;
-  setValue: UseFormSetValue<Estudiante>;
-  niveles: { id: number; nombre: string; description: string }[];
+  register: UseFormRegister<EstudianteCompleto>;
+  setValue: UseFormSetValue<EstudianteCompleto>;
+  niveles: Niveles[];
 }
 
 export function FormularioRegistro({register, setValue, niveles}: Props) {

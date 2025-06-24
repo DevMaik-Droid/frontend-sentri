@@ -14,6 +14,8 @@ export function DashboardLayout({
   sidebarMenu,
   navbaritems,
 }: DashboardLayoutProps) {
+
+
   return (
     <>
       <SidebarProvider>

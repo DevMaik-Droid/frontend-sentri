@@ -255,12 +255,14 @@ export default function FrameAdministrarParalelos() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+
                     <DropdownMenuItem
                       onClick={() => setViewingParallel(parallel)}
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       Ver detalles
                     </DropdownMenuItem>
+
                     <DropdownMenuItem
                       onClick={() => setEditingParallel(parallel)}
                     >
@@ -408,6 +410,8 @@ export default function FrameAdministrarParalelos() {
               <DialogDescription>Información completa del paralelo seleccionado.</DialogDescription>
             </DialogHeader>
 
+            
+
             {viewingParallel && (
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
@@ -490,6 +494,8 @@ export default function FrameAdministrarParalelos() {
                 </Card>
               </div>
             )}
+
+
             <DialogFooter>
               <Button onClick={() => setViewingParallel(null)}>Cerrar</Button>
             </DialogFooter>

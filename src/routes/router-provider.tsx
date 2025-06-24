@@ -19,9 +19,9 @@ import { MainEstudiante } from "../components/organismos/MainEstudiante";
 import Login from "../pages/Login";
 import PrivateRoutes from "./PrivateRoutes";
 import EstudianteDashboard from "../pages/EstudianteDashboard";
-import FrameRegistrarMateria from "../components/organismos/student/FrameRegistrarMateria";
 import CrearParalelo from "../pages/materias/CrearParalelo";
 import AdministrarParalelo from "../pages/materias/AdministrarParalelo";
+import FrameInscripcion from "../components/organismos/student/ FrameInscripcion";
 
 
 export function RouterProvider() {
@@ -55,7 +55,7 @@ export function RouterProvider() {
             <Route path="asistencia" element={<StudentAttendanceView />} />
             <Route path="calificaciones" element={<StudentGradesView />} />
             <Route path="expedientes" element={<StudentRecordsView />} />
-            <Route path="inscripcion/materias" element={<FrameRegistrarMateria/>}></Route>
+            <Route path="inscripcion/materias" element={<FrameInscripcion/>}></Route>
           </Route>
         </Route>
 

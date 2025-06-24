@@ -1,9 +1,9 @@
 import { useState, useEffect, type ReactNode } from "react";
 import AuthContext, { type AuthContextType } from "./AuthContext";
-import type { Usuario } from "../types/usuarios-types";
+import type { Usuarios } from "../types/usuarios-types";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [usuario, setUsuario] = useState<Usuarios | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("auth_user");
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const login = (user: Usuario) => {
+  const login = (user: Usuarios) => {
     setUsuario(user);
     localStorage.setItem("auth_user", JSON.stringify(user));
   };

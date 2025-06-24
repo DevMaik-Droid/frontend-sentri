@@ -1,4 +1,4 @@
-import type { Horario, Paralelo } from "../types/general/general-types";
+import type { Horarios, Paralelos } from "../types/general/general-types";
 import { api } from "./api";
 
 
@@ -19,11 +19,11 @@ export const GeneralService = {
         const response = await api.get("general/aulas");
         return response.data;
     },
-    crearParalelos : async (paralelos : Paralelo[]) => {
+    crearParalelos : async (paralelos : Paralelos[]) => {
         const response = await api.post("general/paralelo/registrar", paralelos);
         return response.data;
     },
-    crearHorario : async (horario : Horario[]) => {
+    crearHorario : async (horario : Horarios[]) => {
         const response = await api.post("general/horario/registrar", horario);
         return response.data;
     },
