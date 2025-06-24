@@ -15,7 +15,8 @@ import {
   UserCheck,
   Layers,
   MessageSquare,
-  HelpCircle
+  HelpCircle,
+  BarChart2Icon
 } from "lucide-react"
 import type { MenuGrupo } from "../types/sidebar-menu"
 import { DashboardLayout } from "../components/templates/dashboard-layout";
@@ -30,7 +31,14 @@ const sidebarMenu: MenuGrupo[] = [
         url: "/admin",
         icon: Home,
       },
-    ],
+      {
+        titulo: "Tomar Asistencia",
+        url: "/asistencia/capturar",
+        icon: BarChart2Icon,
+      },
+
+    ]
+    
   },
   {
     titulo: "Estudiantes y Docentes",

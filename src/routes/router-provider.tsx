@@ -22,6 +22,7 @@ import EstudianteDashboard from "../pages/EstudianteDashboard";
 import CrearParalelo from "../pages/materias/CrearParalelo";
 import AdministrarParalelo from "../pages/materias/AdministrarParalelo";
 import FrameInscripcion from "../components/organismos/student/ FrameInscripcion";
+import ReconocimientoFacial from "../components/organismos/ReconocimientoFacial";
 
 
 export function RouterProvider() {
@@ -31,6 +32,7 @@ export function RouterProvider() {
         {/* Rutas publicas */}
         <Route path="/" element={<Navigate to="/login" replace />}></Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/asistencia/capturar" element={<ReconocimientoFacial />}></Route>
 
         {/* Dashboard por roles */}
 
@@ -38,6 +40,8 @@ export function RouterProvider() {
         <Route element={<PrivateRoutes rolesPermitidos={"ADMIN"} />}>
           <Route path="/dashboard" element={<AdminDashboard />}>
             <Route index element={<MainAdmin />} />
+            
+            
             <Route path="estudiantes/lista" element={<ListaEstudiantes />} />
             <Route path="estudiantes/asistencia" element={<StudentAttendanceView />}/>
             <Route path="estudiantes/calificaciones" element={<StudentGradesView />}/>

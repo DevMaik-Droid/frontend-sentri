@@ -2,7 +2,7 @@ import { Plus, Award, UserCheck } from "lucide-react"
 import { Button } from "../../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
-import { AvatarImage } from "../../atomos/avatar-image"
+import { AvatarImageCustom } from "../../atomos/avatar-image"
 import { CustomBadge } from "../../atomos/custom-badge"
 import {
   DropdownMenu,
@@ -120,7 +120,7 @@ export function TeacherStudentsTable() {
               <TableRow key={student.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.name} size="md" />
+                    <AvatarImageCustom src={student.avatar || "/placeholder.svg"} alt={student.name} size="md" />
                     <div>
                       <div className="font-medium">{student.name}</div>
                       <div className="text-sm text-muted-foreground">{student.email}</div>

@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { AvatarImage } from "../../atomos/avatar-image";
+import { AvatarImageCustom } from "../../atomos/avatar-image";
 import { CustomBadge } from "../../atomos/custom-badge";
 import {
   DropdownMenu,
@@ -94,7 +94,7 @@ export default function TablaEstudiantes({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <AvatarImage
+                    <AvatarImageCustom
                       src={data.usuario.foto_perfil || "/placeholder.svg"}
                       alt={data.usuario.nombre}
                       size="md"

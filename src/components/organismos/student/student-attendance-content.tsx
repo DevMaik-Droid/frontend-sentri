@@ -6,7 +6,7 @@ import { Button } from "../../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card"
 import { Input } from "../../ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
-import { AvatarImage } from "../../atomos/avatar-image"
+import { AvatarImageCustom } from "../../atomos/avatar-image"
 import { CustomBadge } from "../../atomos/custom-badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
@@ -254,7 +254,7 @@ export function StudentAttendanceContent() {
                         <TableCell className="font-medium">{record.id}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <AvatarImage src={record.avatar || "/placeholder.svg"} alt={record.name} size="md" />
+                            <AvatarImageCustom src={record.avatar || "/placeholder.svg"} alt={record.name} size="md" />
                             <div className="font-medium">{record.name}</div>
                           </div>
                         </TableCell>

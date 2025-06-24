@@ -16,7 +16,7 @@ export default function PrivateRoutes({rolesPermitidos}:Props) {
         return <Navigate to="/" replace/>
     }
 
-    if (!rolesPermitidos.includes(usuario.rol)) {
+    if (!rolesPermitidos.includes(usuario.usuario.rol)) {
         return <Navigate to="/" replace/>
     }
 

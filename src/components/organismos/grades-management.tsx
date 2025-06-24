@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { Input } from "../ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { AvatarImage } from "../atomos/avatar-image"
+import { AvatarImageCustom } from "../atomos/avatar-image"
 import { CustomBadge } from "../atomos/custom-badge"
 
 const gradesData = [
@@ -164,7 +164,7 @@ export function GradesManagement() {
               <TableRow key={student.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.name} size="md" />
+                    <AvatarImageCustom src={student.avatar || "/placeholder.svg"} alt={student.name} size="md" />
                     <div className="font-medium">{student.name}</div>
                   </div>
                 </TableCell>

@@ -17,7 +17,7 @@ const Camara: React.FC<CamaraProps> = ({ referenciaVideo }) => {
       });
   }, [referenciaVideo]);
 
-  return <video ref={referenciaVideo} autoPlay playsInline width="100%" />;
+  return <video ref={referenciaVideo} autoPlay playsInline  width="80%" height="600px"  className="object-cover m-auto"/>;
 };
 
 export default Camara;

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { TableCell, TableRow } from "../ui/table"
-import { AvatarImage } from "../atomos/avatar-image"
+import { AvatarImageCustom } from "../atomos/avatar-image"
 import { CustomBadge } from "../atomos/custom-badge"
 
 interface Student {
@@ -35,7 +35,7 @@ export function StudentRow({ student, onEdit, onDelete, onViewProfile }: Student
     <TableRow className="hover:bg-muted/50">
       <TableCell>
         <div className="flex items-center gap-3">
-          <AvatarImage src={student.avatar || "/placeholder.svg?height=32&width=32"} alt={student.name} size="md" />
+          <AvatarImageCustom src={student.avatar || "/placeholder.svg?height=32&width=32"} alt={student.name} size="md" />
           <div>
             <div className="font-medium">{student.name}</div>
             <div className="text-sm text-muted-foreground">{student.email}</div>

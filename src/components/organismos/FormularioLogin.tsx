@@ -13,8 +13,6 @@ import { GeneralService } from "../../services/general.service";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import toast, { Toaster } from "react-hot-toast";
-import { EstudianteService } from "../../services/estudiante/estudiante.service";
-import { useProfile } from "../../hooks/useProfile";
 
 export default function FormularioLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,20 +22,6 @@ export default function FormularioLogin() {
   const navigate = useNavigate();
   const { login, usuario } = useAuth();
 
-  const { guardarEstudiante } = useProfile();
-
-  const obtener_estudiante = async () => {
-    try {
-      const response = await EstudianteService.obtenerEstudianteByUsuario(
-        usuario.id
-      );
-      if (response.ok) {
-        guardarEstudiante(response.data);
-      }
-    } catch (error) {
-      console.error("Error al obtener los paralelos:", error);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +36,13 @@ export default function FormularioLogin() {
       const response = await GeneralService.login(username, password);
       if (response.result === "ok") {
         console.log(response.message);
+        console.log(response.data);
+        
         login(response.data);
         setIsLoading(false);
 
-        switch (response.data.rol) {
+        console.log(usuario?.usuario.rol);
+        switch (usuario?.usuario.rol) {
           case "ADMIN":
             navigate("/dashboard");
             break;
@@ -63,7 +50,6 @@ export default function FormularioLogin() {
             navigate("/dashboard/docente");
             break;
           case "ESTUDIANTE":
-            obtener_estudiante();
             navigate("/dashboard/estudiante");
             break;
         }
