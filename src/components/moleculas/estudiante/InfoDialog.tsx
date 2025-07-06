@@ -90,20 +90,20 @@ export function InfoDialog({ estudiante, open, onOpenChange  }: EstudianteInfoDi
               <Avatar className="h-24 w-24">
                 <AvatarImage
                   src="/placeholder.svg?height=100&width=100"
-                  alt={`${estudiante.usuario.nombre} ${estudiante.usuario.apellido}`}
+                  alt={`${estudiante.user.usuario.nombre} ${estudiante.user.usuario.apellido}`}
                 />
                 <AvatarFallback className="text-lg">
-                  {estudiante.usuario.nombre}
-                  {estudiante.usuario.apellido}
+                  {estudiante.user.usuario.nombre}
+                  {estudiante.user.usuario.apellido}
                 </AvatarFallback>
               </Avatar>
 
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
                   <h3 className="text-2xl font-semibold">
-                    {estudiante.usuario.nombre} {estudiante.usuario.apellido}
+                    {estudiante.user.usuario.nombre} {estudiante.user.usuario.apellido}
                   </h3>
-                  {getStatusBadge(estudiante.usuario.estado)}
+                  {getStatusBadge(estudiante.user.usuario.estado)}
                 </div>
                 <p className="text-muted-foreground flex items-center">
                   <Hash className="mr-2 h-4 w-4" />
@@ -111,11 +111,11 @@ export function InfoDialog({ estudiante, open, onOpenChange  }: EstudianteInfoDi
                 </p>
                 <p className="text-muted-foreground flex items-center">
                   <IdCard className="mr-2 h-4 w-4" />
-                  CI: {estudiante.usuario.cedula}
+                  CI: {estudiante.user.usuario.cedula}
                 </p>
                 <p className="text-muted-foreground flex items-center">
                   <GraduationCap className="mr-2 h-4 w-4" />
-                  {estudiante.niveles.nombre}
+                  {estudiante.niveles?.nombre}
                 </p>
               </div>
             </div>
@@ -130,23 +130,23 @@ export function InfoDialog({ estudiante, open, onOpenChange  }: EstudianteInfoDi
                 <CardContent className="space-y-3">
                   <div className="flex items-center space-x-3">
                     <Mail className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{estudiante.usuario.email}</span>
+                    <span className="text-sm">{estudiante.user.usuario.email}</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{estudiante.usuario.telefono}</span>
+                    <span className="text-sm">{estudiante.user.usuario.telefono}</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{estudiante.usuario.direccion}</span>
+                    <span className="text-sm">{estudiante.user.usuario.direccion}</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Nacimiento: {estudiante.usuario.fecha_nacimiento}</span>
+                    <span className="text-sm">Nacimiento: {estudiante.user.usuario.fecha_nacimiento}</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Género: {estudiante.usuario.genero}</span>
+                    <span className="text-sm">Género: {estudiante.user.usuario.genero}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -158,7 +158,7 @@ export function InfoDialog({ estudiante, open, onOpenChange  }: EstudianteInfoDi
                 <CardContent className="space-y-3">
                   <div className="flex items-center space-x-3">
                     <BookOpen className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{estudiante.niveles.nombre}</span>
+                    <span className="text-sm">{estudiante.niveles?.nombre}</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <GraduationCap className="h-4 w-4 text-muted-foreground" />

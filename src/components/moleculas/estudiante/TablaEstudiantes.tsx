@@ -56,7 +56,7 @@ export default function TablaEstudiantes({
       estudiante.niveles?.nombre === nivelSeleccionado;
 
     const porEstado =
-      filtro === "TODOS" || estudiante.usuario.estado === filtro;
+      filtro === "TODOS" || estudiante.user.usuario.estado === filtro;
 
     return porNivel && porEstado;
   });
@@ -95,28 +95,28 @@ export default function TablaEstudiantes({
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <AvatarImageCustom
-                      src={data.usuario.foto_perfil || "/placeholder.svg"}
-                      alt={data.usuario.nombre}
+                      src={data.user.usuario.foto_perfil || "/placeholder.svg"}
+                      alt={data.user.usuario.nombre}
                       size="md"
                     />
                     <div>
-                      <div className="font-medium">{data.usuario.nombre}</div>
+                      <div className="font-medium">{data.user.usuario.nombre}</div>
                       <div className="text-sm text-muted-foreground">
-                        {data.usuario.email}
+                        {data.user.usuario.email}
                       </div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{data.usuario.cedula || "Sin cedula"}</TableCell>
-                <TableCell>{data.usuario.telefono || "Sin telefono"}</TableCell>
+                <TableCell>{data.user.usuario.cedula || "Sin cedula"}</TableCell>
+                <TableCell>{data.user.usuario.telefono || "Sin telefono"}</TableCell>
                 <TableCell>{data.niveles?.nombre}</TableCell>
                 <TableCell>
                   <CustomBadge
                     variant={
-                      data.usuario.estado === "ACTIVO" ? "default" : "secondary"
+                      data.user.usuario.estado === "ACTIVO" ? "default" : "secondary"
                     }
                   >
-                    {data.usuario.estado}
+                    {data.user.usuario.estado}
                   </CustomBadge>
                 </TableCell>
                 <TableCell>

@@ -176,8 +176,8 @@ export default function EstudianteDashboard() {
 
   const navbarProps: AppNavbarProps = {
     titulo: "Portal Estudiante",
-    userName: `${usuario.usuario?.nombre} ${usuario?.usuario.apellido}`,
-    subtitulo: `${usuario.usuario?.nombre} - Ingeniería de Sistemas`,
+    userName: `${usuario.usuario?.usuario.nombre} ${usuario?.usuario.usuario.apellido}`,
+    subtitulo: `${usuario.usuario?.usuario.nombre} - Ingeniería de Sistemas`,
     userAvatar: "/placeholder.svg?height=32&width=32",
     searchPlaceholder: "Buscar materias, tareas...",
     showCalendar: true,

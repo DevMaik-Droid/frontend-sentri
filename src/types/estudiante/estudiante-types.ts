@@ -1,5 +1,5 @@
 import type { Niveles, ParaleloCompleto } from "../general/general-types";
-import type { Usuarios } from "../usuarios-types";
+import type { UsuarioCompleto, Usuarios } from "../usuarios-types";
 
 export interface Estudiantes{
     id ?: number
@@ -20,7 +20,7 @@ export interface InscripcionCompleta{
 }
 
 export interface EstudianteCompleto{
-    usuario : Usuarios
+    user : UsuarioCompleto
     estudiante : Estudiantes
     niveles? : Niveles
     inscripciones? : InscripcionCompleta

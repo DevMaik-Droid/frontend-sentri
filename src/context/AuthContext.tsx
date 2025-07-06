@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import type { UsuarioCompleto } from "../types/usuarios-types";
+import type {  UsuarioData } from "../types/usuarios-types";
 
 export interface AuthContextType {
-  usuario: UsuarioCompleto | null;
-  login: (usuario : UsuarioCompleto) => void;
+  usuario: UsuarioData | null;
+  login: (usuario : UsuarioData) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }

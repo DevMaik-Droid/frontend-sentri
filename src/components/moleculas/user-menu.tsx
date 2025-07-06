@@ -15,6 +15,7 @@ import {
   Bell,
   Scan,
   Badge,
+  RotateCwIcon,
 } from "lucide-react"
 import { Button } from "../ui/button"
 import {
@@ -29,7 +30,7 @@ import { useAuth } from "../../hooks/useAuth"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { useRef, useState } from "react"
+import {  useRef, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
@@ -37,6 +38,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
 import { AvatarImageCustom } from "../atomos/avatar-image"
+import Camara from "../atomos/Camara"
+import type { Rostro } from "../../types/usuarios-types"
+import { GeneralService } from "../../services/general.service"
+import toast, { Toaster } from "react-hot-toast"
 
 
 interface UserMenuProps {
@@ -48,7 +53,7 @@ interface UserMenuProps {
 export function UserMenu({ userName = "Admin User", userAvatar, variant = "header" }: UserMenuProps) {
 
   const { usuario, logout } = useAuth()
-  userName = `${usuario?.usuario?.nombre} ${usuario?.usuario?.apellido}`
+  userName = `${usuario?.usuario.usuario.nombre} ${usuario?.usuario.usuario.apellido}`
 
   const [profileOpen, setProfileOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -57,7 +62,6 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [faceImage, setFaceImage] = useState<string | null>(null)
-  const [isCapturingFace, setIsCapturingFace] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -65,8 +69,10 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
 
 
 
-  const userInitials = `${usuario?.usuario.nombre[0]}${usuario?.usuario.apellido[0] || ""}`
+  const userInitials = `${usuario?.usuario.usuario.nombre[0]}${usuario?.usuario.usuario.apellido[0] || ""}`
  
+
+
   const handleProfileSave = (e: React.FormEvent) => {
     e.preventDefault()
     console.log("Guardando perfil...")
@@ -100,56 +106,48 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
     }
   }
 
-  const startFaceCapture = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true })
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        setIsCapturingFace(true)
-      }
-    } catch (error) {
-      console.error("Error accessing camera:", error)
-    }
-  }
 
-  const captureFace = () => {
+  // Capturar foto
+  const capturar = () => {
     if (videoRef.current && canvasRef.current) {
-      const canvas = canvasRef.current
-      const video = videoRef.current
-      const context = canvas.getContext("2d")
+      const context = canvasRef.current.getContext('2d');
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+      context?.drawImage(videoRef.current, 0, 0);
+      const imageUrl = canvasRef.current.toDataURL('image/jpeg');
+      setFaceImage(imageUrl);
+    }
+  };
 
-      canvas.width = video.videoWidth
-      canvas.height = video.videoHeight
 
-      if (context) {
-        context.drawImage(video, 0, 0)
-        const imageData = canvas.toDataURL("image/png")
-        setFaceImage(imageData)
-        stopFaceCapture()
+
+  const registrarRostro = async () => {
+    if (faceImage && usuario?.usuario.usuario.id) {
+      const rostro : Rostro ={
+        usuario_id : usuario?.usuario.usuario.id,
+        foto : faceImage
+      }
+      try {
+        const res = await GeneralService.registrarRostro(rostro);
+
+        if (res.result === "ok") {
+          toast.success("Rostro registrado")
+        }
+        
+        setFaceImage(null);
+
+      } catch (error) {
+        console.error("Error al enviar imagen:", error);
       }
     }
   }
 
-  const stopFaceCapture = () => {
-    if (videoRef.current?.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream
-      stream.getTracks().forEach((track) => track.stop())
-    }
-    setIsCapturingFace(false)
-  }
-
-  const removeImage = (type: "profile" | "face") => {
-    if (type === "profile") {
-      setProfileImage(null)
-    } else {
-      setFaceImage(null)
-    }
-  }
 
 
   if (variant === "sidebar") {
     return (
       <>
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="w-full justify-start gap-3 px-3 py-2 h-auto">
@@ -161,7 +159,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
             </Avatar>
             <div className="flex flex-col items-start">
               <span className="truncate font-medium">{userName}</span>
-              <span className="text-xs text-muted-foreground">{usuario?.usuario.email}</span>
+              <span className="text-xs text-muted-foreground">{usuario?.usuario.usuario.email}</span>
             </div>
           </Button>
         </DropdownMenuTrigger>
@@ -169,7 +167,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{userName}</p>
-              <p className="text-xs leading-none text-muted-foreground">{usuario?.usuario.email}</p>
+              <p className="text-xs leading-none text-muted-foreground">{usuario?.usuario.usuario.email}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -190,6 +188,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
 
       {/* Dialog de Perfil */}
       <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+        <Toaster></Toaster>
         <DialogContent className="sm:max-w-[50%] min-h-[600px] overflow-y-auto">
           <DialogHeader className="space-y-3">
             <div className="flex items-center gap-4">
@@ -205,7 +204,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                   Gestiona tu información personal y académica
                 </DialogDescription>
                 <Badge className="mt-1">
-                  {usuario?.usuario.rol}
+                  {usuario?.usuario.rol?.nombre}
                 </Badge>
               </div>
             </div>
@@ -221,7 +220,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                 <Camera className="h-4 w-4" />
                 Fotos
               </TabsTrigger>
-              {usuario?.usuario.rol === "ESTUDIANTE" && (
+              {usuario?.usuario.rol?.nombre === "ESTUDIANTE" && (
                 <TabsTrigger value="academic" className="flex items-center gap-2">
                 <Shield className="h-4 w-4" />
                 Académico
@@ -245,7 +244,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                         <Label htmlFor="nombre">Nombre *</Label>
                         <Input
                           id="nombre"
-                          defaultValue={usuario?.usuario.nombre || ""}
+                          defaultValue={usuario?.usuario.usuario.nombre || ""}
                           placeholder="Ingresa tu nombre"
                           className="h-11"
                         />
@@ -254,7 +253,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                         <Label htmlFor="apellido">Apellido *</Label>
                         <Input
                           id="apellido"
-                          defaultValue={usuario?.usuario.apellido || ""}
+                          defaultValue={usuario?.usuario.usuario.apellido || ""}
                           placeholder="Ingresa tu apellido"
                           className="h-11"
                         />
@@ -266,7 +265,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                       <Input
                         id="email"
                         type="email"
-                        defaultValue={usuario?.usuario.email || ""}
+                        defaultValue={usuario?.usuario.usuario.email || ""}
                         placeholder="tu@email.com"
                         className="h-11"
                       />
@@ -277,7 +276,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                         <Label htmlFor="cedula">Cédula</Label>
                         <Input
                           id="cedula"
-                          defaultValue={usuario?.usuario.cedula || ""}
+                          defaultValue={usuario?.usuario.usuario.cedula || ""}
                           placeholder="Número de cédula"
                           className="h-11"
                         />
@@ -286,7 +285,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                         <Label htmlFor="telefono">Teléfono</Label>
                         <Input
                           id="telefono"
-                          defaultValue={usuario?.usuario.telefono || ""}
+                          defaultValue={usuario?.usuario.usuario.telefono || ""}
                           placeholder="Número de teléfono"
                           className="h-11"
                         />
@@ -299,13 +298,13 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                         <Input
                           id="fecha_nacimiento"
                           type="date"
-                          defaultValue={usuario?.usuario.fecha_nacimiento || ""}
+                          defaultValue={usuario?.usuario.usuario.fecha_nacimiento || ""}
                           className="h-11"
                         />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="genero">Género</Label>
-                        <Select defaultValue={usuario?.usuario.genero || ""}>
+                        <Select defaultValue={usuario?.usuario.usuario.genero || ""}>
                           <SelectTrigger className="h-11">
                             <SelectValue placeholder="Selecciona tu género" />
                           </SelectTrigger>
@@ -322,7 +321,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                       <Label htmlFor="direccion">Dirección</Label>
                       <Textarea
                         id="direccion"
-                        defaultValue={usuario?.usuario.direccion || ""}
+                        defaultValue={usuario?.usuario.usuario.direccion || ""}
                         placeholder="Ingresa tu dirección completa"
                         rows={3}
                         className="resize-none"
@@ -371,7 +370,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                             size="sm"
                             variant="destructive"
                             className="absolute -top-2 -right-2 h-8 w-8 rounded-full p-0"
-                            onClick={() => removeImage("profile")}
+                            
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -410,77 +409,58 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                     <CardDescription>Para reconocimiento facial y seguridad adicional</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex flex-col items-center space-y-4">
-                      {!isCapturingFace ? (
-                        <>
-                          <div className="relative">
-                            <div className="h-32 w-32 border-4 border-dashed border-muted-foreground/25 rounded-lg flex items-center justify-center bg-muted/50">
-                              {faceImage ? (
-                                <img
-                                  src={faceImage || "/placeholder.svg"}
-                                  alt="Rostro registrado"
-                                  className="h-full w-full object-cover rounded-lg"
-                                />
-                              ) : (
-                                <Camera className="h-12 w-12 text-muted-foreground/50" />
-                              )}
-                            </div>
-                            {faceImage && (
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                className="absolute -top-2 -right-2 h-8 w-8 rounded-full p-0"
-                                onClick={() => removeImage("face")}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
+                    <div>
 
-                          <div className="flex flex-col gap-2 w-full">
-                            <Button
-                              type="button"
-                              onClick={startFaceCapture}
-                              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                            >
-                              <Camera className="mr-2 h-4 w-4" />
-                              {faceImage ? "Recapturar Rostro" : "Capturar Rostro"}
-                            </Button>
-                          </div>
+                      {faceImage ? (
+                        <>
+                        <img
+                          src={faceImage}
+                          alt="Rostro de Perfil"
+                          className="w-full h-auto rounded-2xl object-cover"
+                        />
+                        <div className="mt-4 flex gap-1 justify-between ">
+                          <Button
+                            type="button"
+                            onClick={registrarRostro}
+                            className="w-10/12"
+                          >
+                            <Check className="mr-2 h-4 w-4 bg-green-400" />
+                            Registrar
+                          </Button>
+                          <Button
+                            type="button"
+                            onClick={() => setFaceImage(null)}
+                            className="w-1/6 bg-amber-300 text-black hover:bg-amber-200"
+
+                          >
+                            <RotateCwIcon className="mr-2 h-4 w-4 text-center " />
+                          </Button>
+                        </div>
                         </>
+                        
                       ) : (
-                        <div className="space-y-4 w-full">
-                          <video
-                            ref={videoRef}
-                            autoPlay
-                            playsInline
-                            className="w-full h-48 object-cover rounded-lg border"
-                          />
-                          <div className="flex gap-2">
-                            <Button
-                              type="button"
-                              onClick={captureFace}
-                              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                            >
-                              <Check className="mr-2 h-4 w-4" />
-                              Capturar
-                            </Button>
-                            <Button type="button" variant="outline" onClick={stopFaceCapture} className="flex-1">
-                              Cancelar
-                            </Button>
+                        <div className="flex flex-col gap-2 items-center">
+                          <div className="w-56">
+                            <Camara
+                              referenciaVideo={videoRef}
+                            />
                           </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={capturar}
+                            className="w-full"
+                          >
+                            <Camera className="mr-2 h-4 w-4" />
+                            Capturar
+                          </Button>
                         </div>
                       )}
+                        
+
                     </div>
 
-                    {faceImage && !isCapturingFace && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <div className="flex items-center gap-2 text-green-700">
-                          <Check className="h-4 w-4" />
-                          <span className="text-sm font-medium">Rostro registrado correctamente</span>
-                        </div>
-                      </div>
-                    )}
+                    
                   </CardContent>
                 </Card>
               </div>
@@ -507,7 +487,7 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                       <Label>Rol</Label>
                       <div className="flex items-center h-11">
                         <Badge className="text-sm px-3 py-1">
-                          {usuario?.usuario.rol}
+                          {usuario?.usuario.rol?.nombre}
                         </Badge>
                       </div>
                     </div>
@@ -535,12 +515,12 @@ export function UserMenu({ userName = "Admin User", userAvatar, variant = "heade
                       <Label className="text-muted-foreground">Estado de la cuenta</Label>
                       <div className="flex items-center gap-2 mt-1">
                         <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                        <span className="capitalize">{usuario?.usuario.estado || "Activo"}</span>
+                        <span className="capitalize">{usuario?.usuario.usuario.estado || "Activo"}</span>
                       </div>
                     </div>
                     <div>
                       <Label className="text-muted-foreground">Fecha de registro</Label>
-                      <p className="mt-1">{usuario?.usuario.fecha_creacion || "No disponible"}</p>
+                      <p className="mt-1">{usuario?.usuario.usuario.fecha_creacion || "No disponible"}</p>
                     </div>
                   </div>
                 </CardContent>

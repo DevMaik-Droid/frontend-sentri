@@ -8,7 +8,7 @@ export default function Login() {
 
   if (isAuthenticated) {
     
-    switch (usuario?.rol) {
+    switch (usuario?.usuario.rol?.nombre) {
       case "ESTUDIANTE":
         return <Navigate to="/dashboard/estudiante" replace/>
       case "DOCENTE":

@@ -20,7 +20,7 @@ export default function FormularioLogin() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, usuario } = useAuth();
+  const { login } = useAuth();
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,14 +35,11 @@ export default function FormularioLogin() {
     try {
       const response = await GeneralService.login(username, password);
       if (response.result === "ok") {
-        console.log(response.message);
-        console.log(response.data);
         
         login(response.data);
         setIsLoading(false);
 
-        console.log(usuario?.usuario.rol);
-        switch (usuario?.usuario.rol) {
+        switch (response.data.usuario.rol.nombre) {
           case "ADMIN":
             navigate("/dashboard");
             break;

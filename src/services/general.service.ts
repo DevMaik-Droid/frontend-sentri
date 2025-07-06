@@ -1,4 +1,6 @@
 import type { Consulta, Horarios, Paralelos } from "../types/general/general-types";
+import type { Rostro } from "../types/usuarios-types";
+
 import { api } from "./api";
 
 
@@ -35,5 +37,9 @@ export const GeneralService = {
     login : async (username : string, password : string) => {
         const response = await api.post("usuario/login", {username, password});
         return response.data;
-    } 
+    },
+    registrarRostro : async (rostro : Rostro) => {
+        const response = await api.post("usuario/registrar/rostro", rostro);
+        return response.data;
+    }
 };

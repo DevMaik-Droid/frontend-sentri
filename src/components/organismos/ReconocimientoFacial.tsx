@@ -64,6 +64,7 @@ export default function ReconocimientoFacial() {
       const datos: ResultadoAPI = await respuesta.json();
       setResultado(datos);
 
+      console.log("Respuesta de la API:", datos);
       if (resultado?.result === "ok") {
         await reproducirSonido();
       }
@@ -94,22 +95,21 @@ export default function ReconocimientoFacial() {
       />
       <canvas ref={referenciaCanvas} style={{ display: "none" }} />
 
-      {resultado && (
-        <div style={{ marginTop: "15px" }}>
-          {resultado.result === "ok" ? (
-            <p>
-              ✅ Usuario reconocido: {resultado.usuario?.nombre}{" "}
-              {resultado.usuario?.apellido} <br />
-              Rol: {resultado.usuario?.rol} <br />
-              Mensaje: {resultado.message} <br />
-              Confianza: {resultado.confianza}
-            </p>
-          ) : (
-            <p>❌ {resultado.message}</p>
-          )}
-        </div>
-      )}
-      
+      <div className="fixed right-2.5 top-2.5 bg-gray-900 p-4 rounded-2xl">
+        {resultado && (
+          <div style={{ marginTop: "15px" }}>
+            {resultado.result === "ok" ? (
+              <p className="text-white flex justify-center">
+                ✅ {resultado.message} <br />
+                id: {resultado.usuario?.id} <br />
+                Confianza: {(resultado.confianza || 0).toFixed(4)}
+              </p>
+            ) : (
+              <p className="text-white flex justify-center">❌ {resultado.message}</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

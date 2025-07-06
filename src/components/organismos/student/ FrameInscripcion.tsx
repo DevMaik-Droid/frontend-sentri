@@ -7,6 +7,7 @@ import { Badge } from "../../../components/ui/badge"
 import { MapPin, Users, BookOpen, Calendar, CheckCircle, GraduationCap, Trash2 } from "lucide-react"
 import type { ParaleloCompleto } from "../../../types/general/general-types"
 import { EstudianteService } from "../../../services/estudiante/estudiante.service"
+import { useAuth } from "../../../hooks/useAuth"
 
 // Datos simulados basados en el JSON proporcionado
 
@@ -36,10 +37,12 @@ export default function FrameInscripcion() {
 
   const [materiasData, setMateriasData] = useState<ParaleloCompleto[]>([])
 
+  const {usuario} = useAuth();
+  
   useEffect(() => {
     const obtenerParalelos = async () => {
       try {
-        const res = await EstudianteService.obtenerMateriasEstudiante(6);
+        const res = await EstudianteService.obtenerMateriasEstudiante(usuario?.estudiante?.id || 0);
         setMateriasData(res.data);
       } catch (error) {
         console.log(error);
@@ -47,7 +50,7 @@ export default function FrameInscripcion() {
     }
 
     obtenerParalelos();
-  }, [])
+  }, [usuario?.estudiante?.id])
 
 
   // Obtener materias únicas
